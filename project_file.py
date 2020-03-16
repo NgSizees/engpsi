@@ -24,8 +24,8 @@ class Engsci_Press:
             return tree 
                 
     def collate_bsts(self):
-        self.dictionary_tree = BalancingTree(Node2(self.process_dictionary('projects/dictionary/Dictionary_in_csv/A.csv')))
-        dictionary_format = 'projects/dictionary/Dictionary_in_csv/'
+        self.dictionary_tree = BalancingTree(Node2(self.process_dictionary('/Users/vikagerman/Desktop/engpsi/Dictionary_in_csv/A.csv')))
+        dictionary_format = '/Users/vikagerman/Desktop/engpsi/Dictionary_in_csv'
         for i in range(66, 91):
             filename = dictionary_format + str(chr(i)) + '.csv' 
             self.dictionary_tree.balanced_insert(Node2(self.process_dictionary(filename)))
@@ -127,6 +127,8 @@ class Engsci_Press:
                     k.write(p.name + ' ' + p.definition)
                 k.write('\n')
         k.close()
+	
+        
 
         
 
