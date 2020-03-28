@@ -1,6 +1,6 @@
 from lab0_utilities import *
 	
-
+'''
 # NOTE - Rotations and insertions and balancing are available from avl_trees_tester
 # build_trees_from_file is the main idea behind building the tree, getting this wrong implies
 # most of the testable functions are also wrong. Balancing is secondary, getting the nodes into 
@@ -71,7 +71,7 @@ class Languages:
 		self.findCounts(node.left, threshold, names)
 		self.findCounts(node.right, threshold, names)
 		return
-
+	'''
 
 class BalancingTree:
 	def __init__(self, root_node):
@@ -227,28 +227,28 @@ class BalancingTree:
 		return self.count
 	
 	def preOrder(self, root):
-		result = []
-		if root:
-			result.append(root._val)
-			result += self.preOrder(root.left)
-			result += self.preOrder(root.right)
-			return result
+	    result = []
+	    if root:
+	        result.append(root._val)
+	        result += self.preOrder(root.left)
+	        result += self.preOrder(root.right)
+	    return result
 		
 	def maximum(self, root: Node):
-		while root.right:
-			root = root.right
-		return root
+	    while root.right:
+	        root = root.right
+	    return root
 	def minimum(self, root:Node):
 		# Try implementing (similar to maximum)
 		while root.left:
 			root = root.left
 		return root
 	def predecessor(self, n:Node):
-		if n.left:
-			return self.maximum(n.left)
-		while n and n == n.parent.left:
-			n = n.parent
-		return n.parent
+	    if n.left:
+	        return self.maximum(n.left)
+	    while n and n == n.parent.left:
+	        n = n.parent
+	    return n.parent
 	def successor(self, n:Node):
 	    # Try implementing (similar to predecessor)
 		if n.right:
@@ -256,37 +256,9 @@ class BalancingTree:
 		while n and n==n.parent.right:
 			n = n.parent
 		return n.parent
-	
-	
-	def delete(self, node):
-		"""Deletes and returns a node  if it exists from the BST.
-		This AVL version guarantees the balance property: h = O(lg n).
-	 
-		Args:
-		    k: The key of the node that we want to delete.
-	 
-		Returns:
-		    The deleted node.
-		"""
-		#node = self.find(k)
-		if node is None:
-			return None
-		if node is self.root:
-			pseudoroot = AVLNode(None, 0)
-			pseudoroot.left = self.root
-			self.root.parent = pseudoroot
-			deleted = self.root.delete()
-			self.root = pseudoroot.left
-			if self.root is not None:
-				self.root.parent = None
-		else:
-			deleted = node.delete()   
-		## node.parent is actually the old parent of the node,
-		## which is the first potentially out-of-balance node.
-		self.rebalance(deleted.parent)		
 		
 		 
-
+'''
 if __name__ == "__main__":
 	with open('data/us_languages.csv') as f:
 		languages = Languages()
@@ -322,4 +294,5 @@ if __name__ == "__main__":
 
 	#print('Height difference for 1931', data_by_year[1931].get_height_difference())
 	#print('Height difference for 1941', data_by_year[1941].get_height_difference())
-	#print('Height difference for 1971', data_by_year[1971].get_height_difference())`
+	#print('Height difference for 1971', data_by_year[1971].get_height_difference())
+	'''
