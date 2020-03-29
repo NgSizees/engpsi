@@ -1,5 +1,4 @@
-from utilities import *
-
+#from utilities import *
 def parse_story(file_name):
     '''
     (str)->list

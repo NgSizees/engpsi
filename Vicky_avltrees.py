@@ -283,7 +283,7 @@ class BalancingTree:
 			deleted = node.delete()   
 		## node.parent is actually the old parent of the node,
 		## which is the first potentially out-of-balance node.
-		self.rebalance(deleted.parent)		
+		self.balance_tree(deleted.parent)		
 		
 		 
 

@@ -6,6 +6,12 @@ from fuzzywuzzy import fuzz
 from fuzzywuzzy import process
 from google_trans import Translator
 from google_trans import LANGCODES
+# restart the terminal every time i compile:
+# sleep  function
+# how to improve ui
+# input like press 1 and stuff
+# scroll function with previous_word and next_word
+# make sure delete works (how to integrate with new code)
 
 
 def lev(len_a, len_b, str1, str2):
@@ -26,6 +32,7 @@ def collect_string(a, b):
 class Engsci_Press:
     def __init__(self, author):
         self.author = author
+        
     def process_dictionary(self, filename):
         with open(filename, 'r') as f:       
             t = f.readline()
@@ -44,8 +51,8 @@ class Engsci_Press:
             return tree 
                 
     def collate_bsts(self):
-        self.dictionary_tree = BalancingTree(Node2(self.process_dictionary('dictionary/Dictionary_in_csv/A.csv')))
-        dictionary_format = 'dictionary/Dictionary_in_csv/'
+        self.dictionary_tree = BalancingTree(Node2(self.process_dictionary('/Users/vikagerman/Desktop/engpsi/Dictionary_in_csv/A.csv')))
+        dictionary_format = '/Users/vikagerman/Desktop/engpsi/Dictionary_in_csv'
         for i in range(66, 91):
             filename = dictionary_format + str(chr(i)) + '.csv' 
             self.dictionary_tree.balanced_insert(Node2(self.process_dictionary(filename)))
@@ -58,14 +65,17 @@ class Engsci_Press:
             else:
                 root = root.right
         return root
+    
     def searcher(self, key):
         peek = self.dictionary_tree.root
         peet = self.search(peek, key)
         return peet
+    
     def searchier(self, root, key):
         fleek = root
         p = self.search(fleek, key)
         return p
+    
     def output_definition(self, phrase):
         phrase = phrase.capitalize()
         z = self.searcher(phrase[0])
@@ -79,6 +89,7 @@ class Engsci_Press:
             return ''.join(x) 
         else:
             return 'Not found'
+        
     def subset_words(self, phrase):
         phrase = phrase.capitalize()
         z = self.searcher(phrase[0])
@@ -91,6 +102,7 @@ class Engsci_Press:
                 answer.append(next._val)
                 next = z.val.successor(next)
         return answer
+    
     def findName(self, node, language_name):
         if node is None:
             return False
@@ -115,6 +127,7 @@ class Engsci_Press:
             return t._val, [a.definition for a in t.val]
         else:
             return None
+        
     def next_word(self, word):
         word = word.capitalize()
         z = self.searcher(word[0])
@@ -124,6 +137,7 @@ class Engsci_Press:
             return t._val, [a.definition for a in t.val]
         else:
             return None
+        
     def size(self):
         size = 0
         #n = z.val.preOrder(z.val.root)
@@ -137,6 +151,7 @@ class Engsci_Press:
             z = self.searcher(str(chr(i)))
             size += z.val.preorder_count(z.val.root)
         return size
+    
     def push_tofile(self, filename):
         k = open(filename, "w")
         for i in range(65, 91): 
@@ -147,6 +162,7 @@ class Engsci_Press:
                     k.write(p.name + ' ' + p.definition)
                 k.write('\n')
         k.close()
+        
     def suggest_word(self, word, threshold = None):
         word = word.capitalize()
         #answer = 15
@@ -212,6 +228,29 @@ class Engsci_Press:
             else:
                 result = translator.translate(word)
                 return result.text.capitalize()
+            
+    def scroll (self, word, num_words, direction = 0):
+        if direction != 0 or direction!=1:
+            print("Wrong direction! Specify the direction, please.")
+            print("0 for a previous word, 1 for a next word.");
+        for i in range(num_words):
+            if directon == 0:
+                word = self.previous_word(word)
+                if not word:
+                    print("That's the end of the dictionary, sorry.")
+                    break
+                print("The previous word is: ", word)
+            if direction == 1:
+                word = next_word(word);
+                if not word:
+                    print("That's the end of the dictionary, sorry.")
+                    break
+                print("The next word is: ", word)
+
+class Widget:
+    def __init__(self):
+        
+    
 
 
 
