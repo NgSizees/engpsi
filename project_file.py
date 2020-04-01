@@ -247,9 +247,6 @@ class Engsci_Press:
                     break
                 print("The next word is: ", word)
 
-class Widget:
-    def __init__(self):
-        
     
 
 

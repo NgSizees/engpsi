@@ -1,78 +1,5 @@
 from lab0_utilities import *
 
-'''
-# NOTE - Rotations and insertions and balancing are available from avl_trees_tester
-# build_trees_from_file is the main idea behind building the tree, getting this wrong implies
-# most of the testable functions are also wrong. Balancing is secondary, getting the nodes into 
-# the tree in the right format is more important.
-
-class Languages:
-	def __init__(self):
-		self.data_by_year = {} #{int: BalancingTree}
-
-
-	def build_trees_from_file(self, file_object):
-		# Update the self.data_by_year attribute and return (return not checked directly)
-		data = file_object.readlines()
-		for line in data[1:]:
-			year, language, count = line.split(',')
-			year, count = int(year), int(count) 
-
-			language_stat = LanguageStat(language, year, count)
-			node = Node(language_stat)
-
-			#print('Inserting.....', node._val, ' in year ', year)
-			if year not in self.data_by_year:
-				self.data_by_year[year] = BalancingTree(node)
-			else:
-				self.data_by_year[year].balanced_insert(node, self.data_by_year[year].root)
-		return self.data_by_year	
-
-
-	def query_by_name(self, language_name):
-		# Return a new dictionary of the form {year: count} for the language name
-		result = {}
-		for year in self.data_by_year.keys():
-			count = self.findName(self.data_by_year[year].root, language_name)
-			if count:
-				result[year] = count
-		
-		return result
-				
-
-	def query_by_count(self, threshold = 0):
-		# Return a new dictionary of the form {year: List(str)}
-		result = {}
-		for year in self.data_by_year.keys():
-			names = []
-			self.findCounts(self.data_by_year[year].root, threshold, names)
-			if names:
-				result[year] = names
-		return result
-
-
-	def findName(self, node, language_name):
-		if node is None:
-			# We hit None only when data does not exist in the tree
-			return False
-		if language_name in node._val:
-			return node.val.count
-		elif language_name < node._val:
-			return self.findName(node.left, language_name)
-		else:
-			return self.findName(node.right, language_name)
-
-
-	def findCounts(self, node, threshold, names):
-		if node is None:
-			return
-		if node.val.count > threshold:
-			names.append(node.val.name)
-		self.findCounts(node.left, threshold, names)
-		self.findCounts(node.right, threshold, names)
-		return
-	'''
-
 
 class BalancingTree:
     def __init__(self, root_node):
@@ -276,8 +203,9 @@ class BalancingTree:
         self.rebalance(deleted.parent)    
 
 
-'''
+
 if __name__ == "__main__":
+    
 	with open('data/us_languages.csv') as f:
 		languages = Languages()
 		data_by_year = languages.build_trees_from_file(f)
@@ -313,4 +241,3 @@ if __name__ == "__main__":
 	#print('Height difference for 1931', data_by_year[1931].get_height_difference())
 	#print('Height difference for 1941', data_by_year[1941].get_height_difference())
 	#print('Height difference for 1971', data_by_year[1971].get_height_difference())
-	'''
