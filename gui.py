@@ -1,12 +1,12 @@
 import tkinter as tk
-from project_file import *
+from project_file import Engsci_Press
 
 
 class App(tk.Tk):
     def __init__(self):
         super().__init__()
         self.press = None
-        self.children_dict = dict()
+        self.children_dict = {}
         self.wm_title("EngSci Press")
         self.set_author_window()
         self.st_greetings = tk.Label(self, text="Welcome to EngSci Press!\n"
@@ -204,7 +204,7 @@ class App(tk.Tk):
 
     def word_del(self, dels):
         value = self.children_dict[dels].get()
-        self.press.delete_word(value)
+        #self.press.delete_word(value)
         temp = tk.Toplevel()
         temp.wm_title("Success")
         temp.itemLabel = tk.Label(temp, text="Done!")

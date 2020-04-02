@@ -32,6 +32,7 @@ def collect_string(a, b):
 class Engsci_Press:
     def __init__(self, author):
         self.author = author
+        self.dictionary_tree = None
         
     def process_dictionary(self, filename):
         with open(filename, 'r') as f:       
@@ -50,9 +51,9 @@ class Engsci_Press:
                         tree.balanced_insert(Node(Word(n[0], n[1])))
             return tree 
                 
-    def collate_bsts(self):
-        self.dictionary_tree = BalancingTree(Node2(self.process_dictionary('/Users/vikagerman/Desktop/engpsi/Dictionary_in_csv/A.csv')))
-        dictionary_format = '/Users/vikagerman/Desktop/engpsi/Dictionary_in_csv'
+    def collate_bsts(self, filenam):
+        self.dictionary_tree = BalancingTree(Node2(self.process_dictionary(filenam + '/A.csv')))
+        dictionary_format = 'Dictionary_in_csv/'
         for i in range(66, 91):
             filename = dictionary_format + str(chr(i)) + '.csv' 
             self.dictionary_tree.balanced_insert(Node2(self.process_dictionary(filename)))
@@ -181,7 +182,7 @@ class Engsci_Press:
                 if (answer == 0):
                     return suggested_word
             '''
-        z = process.extractOne(word, n)
+        z = process.extractOne(word, n) 
         if(threshold):
             if(z[1] >= threshold):
                 return z[0]
@@ -232,21 +233,23 @@ class Engsci_Press:
     def scroll (self, word, num_words, direction = 0):
         if direction != 0 or direction!=1:
             print("Wrong direction! Specify the direction, please.")
-            print("0 for a previous word, 1 for a next word.");
+            print("0 for a previous word, 1 for a next word.")
+            return 
         for i in range(num_words):
-            if directon == 0:
+            if direction == 0:
                 word = self.previous_word(word)
                 if not word:
                     print("That's the end of the dictionary, sorry.")
                     break
                 print("The previous word is: ", word)
+                return 
             if direction == 1:
-                word = next_word(word);
+                word = self.next_word(word)
                 if not word:
                     print("That's the end of the dictionary, sorry.")
                     break
                 print("The next word is: ", word)
-
+            return 
     
 
 
@@ -257,10 +260,11 @@ class Engsci_Press:
 
  
 if __name__== '__main__':
+    dictionary_format = 'Dictionary_in_csv'
     dict = Engsci_Press("Vicky")
     x = time.time()
-    dict.collate_bsts()
-    print(dict.output_definition("Babe"))
+    dict.collate_bsts(dictionary_format)
+    print(dict.output_definition("Banality"))
     dict.add_word("Strtd", "(n.) Some asshole")
     print(dict.output_definition("Strtd"))
     print(dict.next_word("millet"))
@@ -268,8 +272,8 @@ if __name__== '__main__':
     print(dict.size())
     print(dict.reference_word("lambaste", 3))
     dict.push_tofile("slack.txt")
-    print(dict.suggest_word("Slaeek", 80))
-    print(dict.translate_word("buenos dias", source="spanish"))
+    print(dict.suggest_word("Slaek", 80))
+    print(dict.translate_word("buenos dias", source="spanish", destination='russian'))
     y = time.time()
     print(y-x)
 
