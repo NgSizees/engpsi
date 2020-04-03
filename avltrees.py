@@ -122,15 +122,6 @@ class BalancingTree:
     def height(self, node):
         return node.height if node else -1
 
-    '''
-	def inOrder(self, node):
-		if node is None:
-			return	
-		self.inOrder(node.left)
-		print(node._val)
-		self.inOrder(node.right)
-	'''
-
     def inOrder(self, root):
         result = []
         if root:
@@ -182,62 +173,79 @@ class BalancingTree:
         while n and n == n.parent.right:
             n = n.parent
         return n.parent
-    
-    def find(self, node):
-            return self.root and self.root.find(node)
-        
-    def delete(self, k):
-        node = self.find(k)
-        if node is None:
-            return None
-        if node is self.root:
-            pseudoroot = AVLNode(None, 0)
-            pseudoroot.left = self.root
-            self.root.parent = pseudoroot
-            deleted = self.root.delete()
-            self.root = pseudoroot.left
-            if self.root is not None:
-                self.root.parent = None
-        else:
-            deleted = node.delete()
-        self.rebalance(deleted.parent)    
 
+        def search(self, key):
+            root = self.root
+            while root and not root._val == key:
+                if key < root._val:
+                    root = root.left
+                else:
+                    root = root.right
+            return root
 
+        def delete(self, n):
+            
+            def replace(root, n1, n2):
+                if not n1.parent:
+                    root = n2
+                elif n1 == n1.parent.left:
+                    n1.parent.left = n2
+                else:
+                    n1.parent.right = n2
+                if n2:
+                    n2.parent = n1.parent
+                return root
 
-if __name__ == "__main__":
-    
-	with open('data/us_languages.csv') as f:
-		languages = Languages()
-		data_by_year = languages.build_trees_from_file(f)
+            def minimum_node(n):
+                while n.left:
+                    n = n.left
+                return n
 
-	root = data_by_year[2000].root
+            if not n.left:
+                self.root = replace(self.root, n, n.right)
+            elif not n.right:
+                self.root = replace(self.root, n, n.left)
+            else:
+                m = minimum_node(n.right)
+                if m.parent is not n:
+                    self.root = replace(self.root, m, m.right)
+                    m.right, m.right.parent = n.right, m
+                self.root = replace(self.root, n, m)
+                m.left = n.left
+                m.left.parent = m
 
-	q = []
-	q.append(root)
-	while q:
-		nodes = len(q)
-		while nodes > 0:
-			node = q.pop(0)
-			print(node._val, end=' ')
-			if node.left is not None:
-				q.append(node.left)
-			if node.right is not None:
-				q.append(node.right)
-			nodes -= 1
-		print(' ')
-	print()
-
-	print(data_by_year[2000].is_balanced())
-	print()
-
-	print('\nQuerying for French: ', languages.query_by_name('French'))
-	print('Querying for English: ', languages.query_by_name('English'))
-	print('Querying for random lang: ', languages.query_by_name('asdfasdf'))
-
-	print('\nQuerying by count = 200000: ', languages.query_by_count(200000))
-	print('Querying by count = 500000: ', languages.query_by_count(500000))
-	print('Querying by count = 300000: ', languages.query_by_count(300000))
-
-	#print('Height difference for 1931', data_by_year[1931].get_height_difference())
-	#print('Height difference for 1941', data_by_year[1941].get_height_difference())
-	#print('Height difference for 1971', data_by_year[1971].get_height_difference())
+        def search_and_delete(self, key):
+            node = self.search(key)
+            if node:
+                self.delete(node)
+            else: return None
+    '''
+    if __name__ == '__main__':
+        tree = BalancingTree(Node(Word('hips','body part')))
+        tree.balanced_insert(Node(Word('jello', 'food')))
+        tree.balanced_insert(Node(Word('volleyball', 'sport')))
+        tree.balanced_insert(Node(Word('dog', 'a friendly animal')))
+        sm = tree.inOrder(tree.root)
+        for i in sm:
+            print(i[0])
+        tree.search_and_delete('jello')
+        print('should be deleted')
+        sm = tree.inOrder(tree.root)
+        for i in sm:
+            print(i[0])
+        print('should be balanced')
+        tree.balance_tree(tree.root)
+        sm = tree.inOrder(tree.root)
+        for i in sm:
+            print(i[0])
+        tree.search_and_delete('hips')
+        print('should be deleted')
+        sm = tree.inOrder(tree.root)
+        for i in sm:
+            print(i[0])
+        print('should be balanced')
+        tree.balance_tree(tree.root)
+        sm = tree.inOrder(tree.root)
+        for i in sm:
+            print(i[0])
+    '''

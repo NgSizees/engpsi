@@ -1,14 +1,13 @@
 import tkinter as tk
-from project_file import Engsci_Press
-
+from project_file import *
 
 class App(tk.Tk):
     def __init__(self):
         super().__init__()
         self.press = None
-        self.children_dict = {}
-        self.wm_title("EngSci Press")
+        self.children_dict = dict()
         self.set_author_window()
+        self.wm_title("EngSci Press")
         self.st_greetings = tk.Label(self, text="Welcome to EngSci Press!\n"
                                                 "This is an amazing interactive dictionary!\n"
                                                 "How can we help you today?\n")
@@ -49,15 +48,19 @@ class App(tk.Tk):
         self.clos_pos_btn.pack(padx=50, pady=20)
 
         self.size_btn = tk.Button(self, text="Tell size of dictionary",
-                                      command=self.size_window)
+                                  command=self.size_window)
         self.size_btn.pack(padx=50, pady=20)
 
         self.save_btn = tk.Button(self, text="Save current dictionary to a file",
-                                      command=self.save_window)
+                                  command=self.save_window)
         self.save_btn.pack(padx=50, pady=20)
 
+        self.trans_btn = tk.Button(self, text="Translate a word",
+                                   command=self.trans_window)
+        self.trans_btn.pack(padx=50, pady=20)
+
         self.dull_btn = tk.Button(self, text="I forgot who's the author...",
-                                      command=self.dull_window)
+                                  command=self.dull_window)
         self.dull_btn.pack(padx=50, pady=20)
 
     def set_author_window(self):
@@ -69,31 +72,30 @@ class App(tk.Tk):
         load.itemEntry = tk.Entry(load, textvariable=load.itemVar)
         load.itemEntry.focus_set()
         self.children_dict[load] = load.itemVar
-        #
         load.itemLabel.grid(row=0, column=0)
         load.itemEntry.grid(row=0, column=1)
 
-        load.okButton = tk.Button(load,text="Ok", command=lambda: self.set_author(load))
+        load.okButton = tk.Button(load, text="Ok", command=lambda: self.set_author(load))
 
         load.okButton.grid(row=1, column=0)
+        load.after(6000, lambda: load.destroy())
 
     def set_author(self, per):
         name = self.children_dict[per].get()
         self.press = Engsci_Press(name)
-        #self.user = name
         temp = tk.Toplevel()
         temp.wm_title("Success")
         temp.itemLabel = tk.Label(temp, text="Done!\n"
                                              "Welcome to EngSci Press, {}!\n"
                                              "Your personal dictionary has been initialized.".format(name))
         temp.itemLabel.pack()
-
+        temp.after(2000, lambda: temp.destroy())
 
     def load_file_window(self):
         load = tk.Toplevel()
         load.wm_title("Load a file")
 
-        load.itemLabel = tk.Label(load, text="Enter the file name: ")
+        load.itemLabel = tk.Label(load, text="Enter the pathname: ")
         load.itemVar = tk.StringVar()
         load.itemEntry = tk.Entry(load,
                                   textvariable=load.itemVar)
@@ -109,14 +111,13 @@ class App(tk.Tk):
         load.okButton.grid(row=1, column=0)
 
     def load_file(self, load):
-        # value = self.children_dict[load].get()
-        # self.press.process_dictionary(value)#get more details
-        # print('Success!')
-        self.press.collate_bsts()
+        value = self.children_dict[load].get()
+        self.press.collate_bsts(value)  # get more details
         temp = tk.Toplevel()
         temp.wm_title("Success")
         temp.itemLabel = tk.Label(temp, text="Done!")
         temp.itemLabel.pack()
+        temp.after(1000, lambda: temp.destroy())
 
     def get_def_window(self):
         defs = tk.Toplevel()
@@ -138,11 +139,16 @@ class App(tk.Tk):
 
     def get_def(self, defs):
         value = self.children_dict[defs].get()
-        definition = self.press.output_definition(value)  # get more details
+        definition = self.press.output_definition(value)
+        # get more details
         temp = tk.Toplevel()
-        temp.wm_title("Word's definition")
-        temp.itemLabel = tk.Label(temp, text=definition)
-        temp.itemLabel.pack()
+        if definition:
+            temp.wm_title("Word's definition")
+            temp.itemLabel = tk.Label(temp, text=definition)
+        else:
+            temp.wm_title("Word's not found")
+            temp.itemLabel = tk.Label(temp, text='404 Not Found!')
+        temp.itemLabel.pack(side='left')
 
     def new_word_window(self):
         new = tk.Toplevel()
@@ -204,71 +210,60 @@ class App(tk.Tk):
 
     def word_del(self, dels):
         value = self.children_dict[dels].get()
-        #self.press.delete_word(value)
         temp = tk.Toplevel()
+        self.press.delete_word(value)
         temp.wm_title("Success")
         temp.itemLabel = tk.Label(temp, text="Done!")
         temp.itemLabel.pack()
 
     def scroll_window(self):
+        def scroll_left():
+            '''
+            text = self.press.previous_word(self.children_dict[scr].get())
+            self.children_dict[scr] = text
+            scr.answer.configure(text=text)
+            '''
+            # print('hello left')
+            # /Users/vikagerman/Desktop/engpsi/Dictionary_in_csv
+            value = self.children_dict[scr]
+            if type(value) != str:
+                text = self.press.previous_word(value.get())
+            else:
+                text = self.press.previous_word(value)
+            self.children_dict[scr] = text
+            scr.answer.configure(text=text)
+
+        def scroll_right():
+            value = self.children_dict[scr]
+            if type(value) != str:
+                text = self.press.next_word(value.get())
+            else: text = self.press.next_word(value)
+            self.children_dict[scr] = text
+            scr.answer.configure(text=text)
+            # print('hello right')
+
         scr = tk.Toplevel()
         scr.wm_title("Scrolling")
-
         scr.itemLabel = tk.Label(scr, text="Enter the word: ")
+        scr.answer = tk.Label(scr, text='')
         scr.itemVar = tk.StringVar()
         scr.itemEntry = tk.Entry(scr, textvariable=scr.itemVar)
         scr.itemEntry.focus_set()
-        self.children_dict[scr] = scr.itemVar
+
         scr.itemLabel.pack()
         scr.itemEntry.pack()
+        scr.answer.pack()
 
-        scr.submitButton = tk.Button(scr,
-                                     text="Ok",
-                                     command=self.scroll(scr))
+        self.children_dict[scr] = scr.itemVar
 
-        scr.submitButton.pack()
 
-    def scroll(self, scr):
-        temp = tk.Toplevel()
-        temp.wm_title("Scrolling")
-        temp.itemLabel = tk.Label(temp, text="Choose which direction to scroll\n"
-                                             "'<' means to letter A\n"
-                                             "'>' means to letter Z\n")
-        temp.itemLabel.grid(column=1, row=0)
-        temp.A_btn = tk.Button(temp, text="<", command=self.A_click(scr))
-        temp.Z_btn = tk.Button(temp, text=">", command=self.Z_click(scr))
-        temp.A_btn.grid(column=0, row=1)
-        temp.Z_btn.grid(column=2, row=1)
-        temp.lbl = tk.Label(temp)
-        temp.lbl.grid(column=1, row=2)
-        '''
-        scr.lbl = tk.Label(scr, text="Choose which direction to scroll\n"
-                                     "'<' means to letter A\n"
-                                     "'>' means to letter Z\n")
-        scr.lbl.grid(column=1, row=1)
-        scr.A_btn = tk.Button(scr, text="<", command=self.A_click(scr))
-        scr.Z_btn = tk.Button(scr, text=">", command=self.Z_click(scr))
-        scr.A_btn.grid(column=0, row=2)
-        scr.Z_btn.grid(column=2, row=2)
-        '''
 
-    def A_click(self, scr):
-        value = self.children_dict[scr].get()
-        ff = tk.Toplevel()
-        ff.wm_title("Result")
-        ff.itemLabel = tk.Label(scr)
-        word = self.press.scroll(value, 0)
-        text = "The previous word is {}\n".format(word) if word else "Sorry that was the end of the dictionary!\n"
-        ff.lbl.config(text=text)
 
-    def Z_click(self, scr):
-        value = self.children_dict[scr].get()
-        word = self.press.scroll(value, 1)
-        ff = tk.Toplevel()
-        ff.wm_title("Result")
-        ff.itemLabel = tk.Label(ff)
-        text = "The previous word is {}\n".format(word) if word else "Sorry that was the end of the dictionary!\n"
-        ff.lbl.config(text=text)
+        scr.A_btn = tk.Button(scr, text="Left\n<", command=lambda : scroll_left())
+        scr.A_btn.pack(side='left')
+
+        scr.Z_btn = tk.Button(scr, text="Right\n>", command=lambda : scroll_right())
+        scr.Z_btn.pack(side='right')
 
     def ref_word_window(self):
         ref = tk.Toplevel()
@@ -362,7 +357,7 @@ class App(tk.Tk):
     def size_window(self):
         sev = tk.Toplevel()
         sev.wm_title("The number for words")
-        sev.itemLabel = tk.Label(sev, text=str(self.press.size()) + " words")#doesn't catch zero size
+        sev.itemLabel = tk.Label(sev, text=str(self.press.size()) + " words")  # doesn't catch zero size
         sev.itemLabel.pack()
 
     def save_window(self):
@@ -391,9 +386,50 @@ class App(tk.Tk):
         sev = tk.Toplevel()
         sev.wm_title("It'S YoU")
         sev.itemLabel = tk.Label(sev, text="Your Majesty, is everything ok?\n"
-                                               "How could you forget your name?\n"
-                                               "People of your kingdom grieve for you, {}".format(self.press.author))
+                                           "How could you forget your name?\n"
+                                           "People of your kingdom grieve for you, {}".format(self.press.author))
         sev.itemLabel.pack()
+
+    def trans_window(self):
+        new = tk.Toplevel()
+        new.wm_title("Translate any word to a chosen language")
+
+        # word input
+        new.wordLabel = tk.Label(new, text="Enter the word: ")
+        new.wordVar = tk.StringVar()
+        new.wordEntry = tk.Entry(new,
+                                 textvariable=new.wordVar)
+        new.wordEntry.focus_set()
+
+        new.wordLabel.grid(row=0, column=0)
+        new.wordEntry.grid(row=0, column=1)
+
+        # source lang
+
+        new.sorLabel = tk.Label(new, text="Enter the destination language(ex. spanish): ")
+        new.sorVar = tk.StringVar()
+        new.sorEntry = tk.Entry(new,
+                                textvariable=new.sorVar)
+
+        new.sorLabel.grid(row=1, column=0)
+        new.sorEntry.grid(row=1, column=1)
+
+        self.children_dict[new] = (new.wordVar, new.sorVar)
+
+        new.okButton = tk.Button(new,
+                                 text="Ok",
+                                 command=lambda: self.trans(new))
+
+        new.okButton.grid(row=2, column=0)
+
+    def trans(self, defs):
+        value = self.children_dict[defs]
+        translation = self.press.translate_word(value[0].get(), value[1].get())  # get more details
+        temp = tk.Toplevel()
+        temp.wm_title("Word's translation")
+        text = "Word's translation of word {} to {}:\n {} ".format(value[0].get(), value[1].get(), translation)
+        temp.itemLabel = tk.Label(temp, text=text)
+        temp.itemLabel.pack()
 
 
 if __name__ == "__main__":
